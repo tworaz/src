@@ -1,4 +1,3 @@
-/* $Header: /home/joerg/repo/netbsd/src/sys/netiso/xebec/malloc.h,v 1.1 1993/04/09 12:02:12 cgd Exp $ */
-/* $Source: /home/joerg/repo/netbsd/src/sys/netiso/xebec/malloc.h,v $ */
+/* $Id: malloc.h,v 1.2 1993/05/20 05:28:28 cgd Exp $ */
 
 char *Malloc();

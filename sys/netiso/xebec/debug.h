@@ -1,5 +1,4 @@
-/* $Header: /home/joerg/repo/netbsd/src/sys/netiso/xebec/debug.h,v 1.1 1993/04/09 12:02:05 cgd Exp $ */
-/* $Source: /home/joerg/repo/netbsd/src/sys/netiso/xebec/debug.h,v $ */
+/* $Id: debug.h,v 1.2 1993/05/20 05:28:20 cgd Exp $ */
 
 #define OUT stdout
 

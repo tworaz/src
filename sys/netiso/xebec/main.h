@@ -1,5 +1,4 @@
-/* $Header: /home/joerg/repo/netbsd/src/sys/netiso/xebec/main.h,v 1.1 1993/04/09 12:02:10 cgd Exp $ */
-/* $Source: /home/joerg/repo/netbsd/src/sys/netiso/xebec/main.h,v $ */
+/* $Id: main.h,v 1.2 1993/05/20 05:28:26 cgd Exp $ */
 
 #define TRUE 1
 #define FALSE 0
