@@ -1,4 +1,4 @@
-/*	$NetBSD: dec_prom.h,v 1.9 1996/09/21 03:33:18 jonathan Exp $	*/
+/*	$NetBSD: dec_prom.h,v 1.13.2.2 1999/02/24 02:11:10 nisimura Exp $	*/
 
 /*
  * Copyright (c) 1992, 1993
@@ -146,7 +146,7 @@ struct callback {
 extern const struct callback *callv;
 extern const struct callback callvec;
 
-#ifndef _KERNEL
+#if defined(_STANDALONE) && !defined(_NO_PROM_DEFINES)
 #define memcpy (*callv -> _memcpy)
 #define memset (*callv -> _memset)
 #define strcat (*callv -> _strcat)
@@ -188,6 +188,10 @@ extern const struct callback callvec;
 #define gettcinfo (*callv -> _gettcinfo)
 #define execute_cmd (*callv -> _execute_cmd)
 #define rex (*callv -> _rex)
+
+#define bzero(dst, len) memset(dst, 0, len)
+/* XXX make sure that no calls to bcopy overlap! */
+#define bcopy(src, dst, len) memcpy(dst, src, len)
 #endif
 
 /*
@@ -239,6 +243,14 @@ typedef struct {
  *	DEC_PROM_PUTS		Put string to console.
  *	DEC_PROM_PRINTF		Kernel style printf to console.
  *
+ *  PROM protocol entry points:
+ *
+ *	DEC_PROM_INITPROTO	Initialize protocol.
+ *	DEC_PROM_PROTOENABLE	Enable protocol mode.
+ *	DEC_PROM_PROTODISABLE	Disable protocol mode.
+ *	DEC_PROM_GETPKT		Get protocol packet.
+ *	DEC_PROM_PUTPKT		Put protocol packet.
+ *
  * The following are other prom routines:
  *	DEC_PROM_FLUSHCACHE	Flush entire cache ().
  *	DEC_PROM_CLEARCACHE	Clear I & D cache in range (addr, len).
@@ -264,6 +276,8 @@ typedef struct {
  *	DEC_PROM_ENABLE		Performs prom enable command.
  *	DEC_PROM_DISABLE	Performs prom disable command.
  *	DEC_PROM_ZEROB		Zeros a system buffer.
+ *	DEC_PROM_HALT		Handler for halt interrupt.
+ *	DEC_PROM_STARTCVAX	58xx VAX Diagnostic Supervisor support.
  */
 #define DEC_PROM_RESET		DEC_PROM_FUNC_ADDR(0)
 #define DEC_PROM_EXEC		DEC_PROM_FUNC_ADDR(1)
@@ -283,6 +297,11 @@ typedef struct {
 #define DEC_PROM_GETS		DEC_PROM_FUNC_ADDR(15)
 #define DEC_PROM_PUTS		DEC_PROM_FUNC_ADDR(16)
 #define DEC_PROM_PRINTF		DEC_PROM_FUNC_ADDR(17)
+#define DEC_PROM_INITPROTO	DEC_PROM_FUNC_ADDR(18)
+#define DEC_PROM_PROTOENABLE	DEC_PROM_FUNC_ADDR(19)
+#define DEC_PROM_PROTODISABLE	DEC_PROM_FUNC_ADDR(20)
+#define DEC_PROM_GETPKT		DEC_PROM_FUNC_ADDR(21)
+#define DEC_PROM_PUTPKT		DEC_PROM_FUNC_ADDR(22)
 #define DEC_PROM_FLUSHCACHE	DEC_PROM_FUNC_ADDR(28)
 #define DEC_PROM_CLEARCACHE	DEC_PROM_FUNC_ADDR(29)
 #define DEC_PROM_SAVEREGS	DEC_PROM_FUNC_ADDR(30)
@@ -307,11 +326,15 @@ typedef struct {
 #define DEC_PROM_ENABLE		DEC_PROM_FUNC_ADDR(49)
 #define DEC_PROM_DISABLE	DEC_PROM_FUNC_ADDR(50)
 #define DEC_PROM_ZEROB		DEC_PROM_FUNC_ADDR(51)
+#define DEC_PROM_HALT		DEC_PROM_FUNC_ADDR(54)
+#define DEC_PROM_STARTCVAX	DEC_PROM_FUNC_ADDR(97)
 
 /*
  * The nonvolatile ram has a flag to indicate it is usable.
  */
 #define MACH_USE_NON_VOLATILE 	((char *)0xbd0000c0)
 #define MACH_NON_VOLATILE_FLAG	0x02
+
+#define DEC_REX_MAGIC		0x30464354	/* REX Magic number */
 
 #endif /* _DEC_PROM */
