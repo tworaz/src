@@ -1,5 +1,5 @@
 #!/bin/sh
-#	$NetBSD: mkldscript.sh,v 1.1.4.2 2004/09/18 14:32:23 skrll Exp $
+#	$NetBSD: mkldscript.sh,v 1.1.4.4 2004/09/22 20:27:03 skrll Exp $
 
 TEMPLATE=$1
 shift
