@@ -1,4 +1,4 @@
-/*	$NetBSD: human.C,v 1.2 2003/12/26 18:03:34 christos Exp $	*/
+/*	$Header: /home/joerg/repo/netbsd/src/games/dab/random.cc,v 1.1 2003/12/27 01:16:55 christos Exp $	*/
 
 /*-
  * Copyright (c) 2003 The NetBSD Foundation, Inc.
@@ -37,115 +37,50 @@
  */
 
 /*
- * human.C: Human interface for dots, using rogue-like keys.
+ * random.C: Randomizer for the dots program
  */
+
 #include "defs.h"
-RCSID("$NetBSD: human.C,v 1.2 2003/12/26 18:03:34 christos Exp $")
+RCSID("$NetBSD: random.cc,v 1.1 2003/12/27 01:16:55 christos Exp $")
 
-#include "human.h"
-#include "board.h"
-#include "box.h"
+#include <time.h>
+#include <string.h>
+#include "random.h"
 
-#define CONTROL(a) ((a) & 037)
-
-HUMAN::HUMAN(const char c) :
-    PLAYER(c),
-    _curx(0),
-    _cury(1)
+RANDOM::RANDOM(size_t ns) :
+    _bs(ns)
 {
+    _bm = new char[(_bs >> 3) + 1];
+    clear();
 }
 
-void HUMAN::play(const BOARD& b, size_t& y, size_t& x, int& dir)
+RANDOM::~RANDOM()
 {
-    int mv;
-    b.setpos(_cury, _curx);
+    delete[] _bm;
+}
+
+// Reinitialize
+void RANDOM::clear(void)
+{
+    _nv = 0;
+    ::srand48(::time(NULL));
+    (void) ::memset(_bm, 0, (_bs >> 3) + 1);
+}
+
+// Return the next random value
+size_t RANDOM::operator() (void)
+{
+    // No more values
+    if (_nv == _bs)
+	return _bs;
 
     for (;;) {
-	switch (mv = b.getmove()) {
-	case 'h': case 'H':
-	    _curx -= 2;
-	    break;
-
-	case 'l': case 'L':
-	    _curx += 2;
-	    break;
-
-	case 'k': case 'K':
-	    _cury -= 2;
-	    break;
-
-	case 'j': case 'J':
-	    _cury += 2;
-	    break;
-
-	case 'u': case 'U':
-	    _curx += 1;
-	    _cury -= 1;
-	    break;
-
-	case 'y': case 'Y':
-	    _curx -= 1;
-	    _cury -= 1;
-	    break;
-
-	case 'b': case 'B':
-	    _curx -= 1;
-	    _cury += 1;
-	    break;
-
-	case 'n': case 'N':
-	    _curx += 1;
-	    _cury += 1;
-	    break;
-
-	case 'q': case 'Q':
-	    exit(0);
-
-	case CONTROL('L'): case CONTROL('R'):
-	    b.clean();
-	    b.paint();
-	    break;
-
-	case ' ':
-	    {
-		x = _curx / 2;
-		y = _cury / 2;
-
-		if (_cury & 1) {
-		    if (_curx == 0)
-			dir = BOX::left;
-		    else {
-			x--;
-			dir = BOX::right;
-		    }
-		}
-
-		if (_curx & 1) {
-		    if (_cury == 0)
-			dir = BOX::top;
-		    else {
-			y--;
-			dir = BOX::bottom;
-		    }
-		}
-	    }
-	    return;
-
-	default:
-	    break;
+	size_t r = ::lrand48();
+	size_t z = r % _bs;
+        if (!isset(z)) {
+	    set(z);
+	    _nv++;
+	    return z;
 	}
-
-        // We add 2 before the comparison to avoid underflow
-	if ((2 + _curx) - (_curx & 1) < 2)
-	    _curx = (b.nx() * 2) + (_curx & 1);
-	if (_curx >= (b.nx() * 2) + 1)
-	    _curx = (_curx & 1);
-
-	if ((2 + _cury) - (_cury & 1) < 2)
-	    _cury = (b.ny() * 2) + (_cury & 1);
-	if (_cury >= (b.ny() * 2) + 1)
-	    _cury = (_cury & 1);
-
-	b.setpos(_cury, _curx);
     }
 }
