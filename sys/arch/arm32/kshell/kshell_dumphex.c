@@ -1,8 +1,8 @@
-/*	$NetBSD: undefined.h,v 1.3.10.1 1997/10/15 05:38:32 thorpej Exp $	*/
+/*	$NetBSD: kshell_dumphex.c,v 1.5.2.2 1997/10/15 05:39:34 thorpej Exp $	*/
 
 /*
- * Copyright (c) 1995-1996 Mark Brinicombe.
- * Copyright (c) 1995 Brini.
+ * Copyright (c) 1994 Mark Brinicombe.
+ * Copyright (c) 1994 Brini.
  * All rights reserved.
  *
  * This code is derived from software written for Brini by Mark Brinicombe
@@ -36,28 +36,98 @@
  *
  * RiscBSD kernel project
  *
- * undefined.h
+ * dumphex.c
  *
- * Undefined instruction types, symbols and prototypes
+ * Hex memory dump routines
  *
- * Created      : 08/02/95
+ * Created      : 17/09/94
  */
 
-#ifdef _KERNEL
+#include <sys/types.h>
+#include <sys/param.h>
+#include <sys/systm.h>
 
-typedef int (*undef_handler_t) __P((unsigned int, unsigned int, trapframe_t *, int));
+/* dumpb - dumps memory in bytes*/
 
-#define FP_COPROC	1
-#define FP_COPROC2	2
-#define MAX_COPROCS	16
+void
+dumpb(addr, count)
+	u_char *addr;
+	int count;
+{
+	u_int byte;
+	int loop;
 
-extern undef_handler_t undefined_handlers[MAX_COPROCS];
+	for (; count > 0; count -= 16) {
+		printf("%08x: ", (int)addr);
 
-/* Prototypes for undefined.c */
+		for (loop = 0; loop < 16; ++loop) {
+			byte = addr[loop];
+			printf("%02x ", byte);
+		}
 
-int install_coproc_handler __P((int, undef_handler_t));
-void undefined_init __P((void));
+		printf(" ");
 
-#endif
+		for (loop = 0; loop < 16; ++loop) {
+			byte = addr[loop];
+			if (byte < 0x20)
+				printf("\x1b[31m%c\x1b[0m", byte + '@');
+			else if (byte == 0x7f)
+				printf("\x1b[31m?\x1b[0m");
+			else if (byte < 0x80)
+				printf("%c", byte);
+			else if (byte < 0xa0)
+				printf("\x1b[32m%c\x1b[0m", byte - '@');
+			else if (byte == 0xff)
+				printf("\x1b[32m?\x1b[0m");
+			else
+				printf("%c", byte & 0x7f);
+		}
 
-/* End of undefined.h */
+		printf("\r\n");
+		addr += 16;
+	}
+}
+
+
+/* dumpw - dumps memory in bytes*/
+
+void 
+dumpw(addr, count)
+	u_char *addr;
+	int count;
+{
+	u_int byte;
+	int loop;
+
+	for (; count > 0; count -= 32) {
+		printf("%08x: ", (int)addr);
+
+		for (loop = 0; loop < 8; ++loop) {
+			byte = ((u_int *)addr)[loop];
+			printf("%08x ", byte);
+		}
+
+		printf(" ");
+
+		for (loop = 0; loop < 32; ++loop) {
+			byte = addr[loop];
+			if (byte < 0x20)
+				printf("\x1b[31m%c\x1b[0m", byte + '@');
+			else if (byte == 0x7f)
+				printf("\x1b[31m?\x1b[0m");
+			else if (byte < 0x80)
+				printf("%c", byte);
+			else if (byte < 0xa0)
+				printf("\x1b[32m%c\x1b[0m", byte - '@');
+			else if (byte == 0xff)
+				printf("\x1b[32m?\x1b[0m");
+			else
+				printf("%c", byte & 0x7f);
+		}
+
+		printf("\r\n");
+		addr += 32;
+	}
+}
+
+/* End of kshell_dumphex.c */
