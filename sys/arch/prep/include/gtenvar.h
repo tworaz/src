@@ -1,11 +1,9 @@
-/*	$NetBSD: intr.h,v 1.1.4.2 2000/12/08 09:30:35 bouyer Exp $ */
-
 /*-
- * Copyright (c) 1998 The NetBSD Foundation, Inc.
+ * Copyright (c) 2000 The NetBSD Foundation, Inc.
  * All rights reserved.
  *
  * This code is derived from software contributed to The NetBSD Foundation
- * by Paul Kranenburg.
+ * by Matt Thomas <matt@3am-software.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,31 +33,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef _MACHINE_GTENVAR_H
+#define	_MACHINE_GTENVAR_H
 
-/* XXX - arbitrary numbers; no interpretation is defined yet */
-#define	IPL_NONE	0		/* nothing */
-#define	IPL_SOFTINT	1		/* softint */
-#define	IPL_SOFTCLOCK	1		/* timeouts */
-#define	IPL_SOFTNET	1		/* protocol stack */
-#define	IPL_BIO		PIL_BIO		/* block I/O */
-#define	IPL_NET		PIL_NET		/* network */
-#define	IPL_SOFTSERIAL	4		/* serial */
-#define	IPL_TTY		PIL_TTY		/* terminal */
-#define	IPL_IMP		PIL_IMP		/* memory allocation */
-#define	IPL_AUDIO	PIL_AUD		/* audio */
-#define	IPL_CLOCK	PIL_CLOCK	/* clock */
-#define	IPL_SERIAL	PIL_SER		/* serial */
-#define	IPL_SCHED	PIL_SCHED	/* scheduler */
-#define	IPL_LOCK	PIL_LOCK	/* locks */
-#define	IPL_HIGH	PIL_HIGH	/* everything */
+struct rasops_info;
 
-#define	__GENERIC_SOFT_INTERRUPTS
+struct gten_softc {
+	struct device gt_dev;
 
-void *
-softintr_establish __P((int level, void (*fun)(void *), void *arg));
+	struct rasops_info *gt_ri;
+	paddr_t gt_paddr;
+	size_t gt_psize;
+	bus_size_t gt_memsize;
+	bus_addr_t gt_memaddr;
+	int gt_nscreens;
+	u_char gt_cmap_red[256];
+	u_char gt_cmap_green[256];
+	u_char gt_cmap_blue[256];
+};
 
-void
-softintr_disestablish __P((void *cookie));
+int     gten_cnattach(bus_space_tag_t);
 
-void
-softintr_schedule __P((void *cookie));
+#endif /* _MACHINE_GTENVAR_H_ */
