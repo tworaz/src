@@ -1,4 +1,4 @@
-/*	$NetBSD: aout_misc.c,v 1.13.2.2 2004/08/03 10:43:28 skrll Exp $	*/
+/*	$NetBSD: aout_misc.c,v 1.13.2.4 2004/09/21 13:24:55 skrll Exp $	*/
 
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc.
@@ -37,7 +37,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: aout_misc.c,v 1.13.2.2 2004/08/03 10:43:28 skrll Exp $");
+__KERNEL_RCSID(0, "$NetBSD: aout_misc.c,v 1.13.2.4 2004/09/21 13:24:55 skrll Exp $");
 
 #if defined(_KERNEL_OPT)
 #include "opt_ktrace.h"

@@ -1,4 +1,4 @@
-#	$NetBSD: files.aout,v 1.1 1999/02/11 09:41:34 christos Exp $
+#	$NetBSD: files.aout,v 1.1.42.2 2004/09/21 13:24:56 skrll Exp $
 #
 # Config file description for machine-independent SVR4 compat code.
 # Included by ports that need it.
