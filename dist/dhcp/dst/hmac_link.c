@@ -1,7 +1,7 @@
 #ifdef HMAC_MD5
-#if !defined(LINT)
+#ifndef LINT
 #if 0
-static const char rcsid[] = "$Header: /home/joerg/repo/netbsd/src/dist/dhcp/dst/hmac_link.c,v 1.2 2002/06/15 01:32:13 matt Exp $";
+static const char rcsid[] = "$Header: /home/joerg/repo/netbsd/src/dist/dhcp/dst/hmac_link.c,v 1.3 2003/02/18 17:08:42 drochner Exp $";
 #endif
 #endif
 /*
