@@ -26,7 +26,7 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-/* $Header: /home/joerg/repo/netbsd/src/usr.bin/lex/nfa.c,v 1.8 1995/05/05 05:35:38 jtc Exp $ */
+/* $Header: /home/joerg/repo/netbsd/src/usr.bin/lex/nfa.c,v 1.9 1996/12/10 07:18:50 mikel Exp $ */
 
 #include "flexdef.h"
 
