@@ -1,4 +1,4 @@
-/*	$NetBSD: pim_var.h,v 1.1.2.2 2004/09/18 14:54:54 skrll Exp $	*/
+/*	$NetBSD: pim_var.h,v 1.1.2.4 2004/09/21 16:20:19 skrll Exp $	*/
 
 /*
  * Copyright (c) 1998-2000
