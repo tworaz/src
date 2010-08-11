@@ -1,9 +1,7 @@
-/*	$NetBSD: pmap.h,v 1.1 2007/08/05 22:28:07 pooka Exp $	*/
+/*	$NetBSD: pmap.h,v 1.1.34.2 2010/08/11 22:55:05 yamt Exp $	*/
 
 /*
- * Copyright (c) 2007 Antti Kantee.  All Rights Reserved.
- *
- * Development of this software was supported by Google Summer of Code.
+ * Copyright (c) 2010 Antti Kantee.  All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,10 +28,9 @@
 #ifndef _SYS_RUMP_PMAP_H_
 #define _SYS_RUMP_PMAP_H_
 
-struct pmap;
-typedef struct pmap *pmap_t;
-
-#define PMAP_KERNEL_MAGIC ((void *)0x7847)
-#define pmap_kernel() (PMAP_KERNEL_MAGIC)
+#define pmap_update(v)
+#define pmap_is_modified(a) (true)
+#define pmap_is_referenced(a) (true)
+#define pmap_resident_count(a) (0)
 
 #endif /* _SYS_RUMP_PMAP_H_ */
