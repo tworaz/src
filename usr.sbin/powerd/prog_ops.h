@@ -33,6 +33,7 @@
 #include <sys/event.h>
 #include <sys/time.h>
 
+#ifndef CRUNCHOPS
 struct prog_ops {
 	int (*op_init)(void);
 
@@ -55,5 +56,15 @@ extern const struct prog_ops prog_ops;
 #define prog_ioctl prog_ops.op_ioctl
 #define prog_fcntl prog_ops.op_fcntl
 #define prog_kqueue prog_ops.op_kqueue
+#else
+#define prog_init ((int (*)(void))NULL)
+#define prog_open open
+#define prog_close close
+#define prog_read read
+#define prog_kevent kevent
+#define prog_ioctl ioctl
+#define prog_fcntl fcntl
+#define prog_kqueue kqueue
+#endif
 
 #endif /* _PROG_OPS_H_ */
