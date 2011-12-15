@@ -26,7 +26,7 @@ file	arch/arm/s3c2xx0/s3c2xx0_intr.c
 device sscom
 attach sscom at ssio
 file arch/arm/s3c2xx0/sscom.c		sscom needs-flag
-defflag	opt_sscom.h	SSCOM0CONSOLE SSCOM1CONSOLE
+defflag	opt_sscom.h	SSCOM0CONSOLE SSCOM1CONSOLE SSCOM2CONSOLE
 defparam opt_sscom.h	SSCOM_FREQ       # PCLK
 defflag	opt_sscom.h	SSCOM_S3C2410	SSCOM_S3C2400	SSCOM_S3C2800
 

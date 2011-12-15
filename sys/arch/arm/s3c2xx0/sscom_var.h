@@ -94,7 +94,7 @@
 #define	SSCOM_RING_SIZE	2048
 
 struct sscom_softc {
-	struct device sc_dev;
+	device_t sc_dev;
 	void *sc_si;
 	struct tty *sc_tty;
 
