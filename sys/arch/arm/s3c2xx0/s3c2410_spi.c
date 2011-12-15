@@ -53,7 +53,7 @@ __KERNEL_RCSID(0, "$NetBSD: s3c2410_spi.c,v 1.6 2011/07/01 20:31:39 dyoung Exp $
 #include "locators.h"
 
 struct ssspi_softc {
-	struct device dev;
+	device_t	sc_dev;
 
 	bus_space_tag_t    iot;
 	bus_space_handle_t ioh;
@@ -62,14 +62,13 @@ struct ssspi_softc {
 
 
 /* prototypes */
-static int	ssspi_match(struct device *, struct cfdata *, void *);
-static void	ssspi_attach(struct device *, struct device *, void *);
-static int 	ssspi_search(struct device *, struct cfdata *,
-			     const int *, void *);
+static int	ssspi_match(device_t, cfdata_t, void *);
+static void	ssspi_attach(device_t, device_t, void *);
+static int 	ssspi_search(device_t, cfdata_t, const int *, void *);
 static int	ssspi_print(void *, const char *);
 
 /* attach structures */
-CFATTACH_DECL(ssspi, sizeof(struct ssspi_softc), ssspi_match, ssspi_attach,
+CFATTACH_DECL_NEW(ssspi, sizeof(struct ssspi_softc), ssspi_match, ssspi_attach,
     NULL, NULL);
 
 
@@ -84,7 +83,7 @@ ssspi_print(void *aux, const char *name)
 }
 
 int
-ssspi_match(struct device *parent, struct cfdata *match, void *aux)
+ssspi_match(device_t parent, cfdata_t match, void *aux)
 {
 	struct s3c2xx0_attach_args *sa = aux;
 
@@ -101,9 +100,9 @@ ssspi_match(struct device *parent, struct cfdata *match, void *aux)
 }
 
 void
-ssspi_attach(struct device *parent, struct device *self, void *aux)
+ssspi_attach(device_t parent, device_t self, void *aux)
 {
-	struct ssspi_softc *sc = (struct ssspi_softc*)self;
+	struct ssspi_softc *sc = device_private(self);
 	struct s3c2xx0_attach_args *sa = (struct s3c2xx0_attach_args *)aux;
 	bus_space_tag_t iot = sa->sa_iot;
 
@@ -122,6 +121,7 @@ ssspi_attach(struct device *parent, struct device *self, void *aux)
 
 	aprint_normal("\n");
 
+	sc->sc_dev = self;
 	sc->index = sa->sa_index;
 	sc->iot = iot;
 
@@ -135,9 +135,9 @@ ssspi_attach(struct device *parent, struct device *self, void *aux)
 }
 
 int
-ssspi_search(struct device *parent, struct cfdata *cf, const int *ldesc, void *aux)
+ssspi_search(device_t parent, cfdata_t cf, const int *ldesc, void *aux)
 {
-	struct ssspi_softc *sc = (struct ssspi_softc *)parent;
+	struct ssspi_softc *sc = device_private(parent);
 	struct ssspi_attach_args spia;
 	static const unsigned char intr[] = { S3C24X0_INT_SPI0,
 					      S3C2410_INT_SPI1 };
