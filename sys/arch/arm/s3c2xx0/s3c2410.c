@@ -43,20 +43,23 @@ __KERNEL_RCSID(0, "$NetBSD: s3c2410.c,v 1.11 2011/07/01 20:31:39 dyoung Exp $");
 
 #include <arm/cpufunc.h>
 #include <arm/mainbus/mainbus.h>
-#include <arm/s3c2xx0/s3c2410reg.h>
 #include <arm/s3c2xx0/s3c2410var.h>
+#ifdef S3C2440
+#include <arm/s3c2xx0/s3c2440reg.h>
+#else
+#include <arm/s3c2xx0/s3c2410reg.h>
+#endif /* S3C2440 */
 
 #include "locators.h"
 #include "opt_cpuoptions.h"
 
 /* prototypes */
-static int	s3c2410_match(struct device *, struct cfdata *, void *);
-static void	s3c2410_attach(struct device *, struct device *, void *);
-static int	s3c2410_search(struct device *, struct cfdata *,
-			       const int *, void *);
+static int	s3c2410_match(device_t, cfdata_t, void *);
+static void	s3c2410_attach(device_t, device_t, void *);
+static int	s3c2410_search(device_t, cfdata_t, const int *, void *);
 
 /* attach structures */
-CFATTACH_DECL(ssio, sizeof(struct s3c24x0_softc), s3c2410_match, s3c2410_attach,
+CFATTACH_DECL_NEW(ssio, sizeof(struct s3c24x0_softc), s3c2410_match, s3c2410_attach,
     NULL, NULL);
 
 extern struct bus_space s3c2xx0_bs_tag;
@@ -85,15 +88,15 @@ s3c2410_print(void *aux, const char *name)
 }
 
 int
-s3c2410_match(struct device *parent, struct cfdata *match, void *aux)
+s3c2410_match(device_t parent, cfdata_t match, void *aux)
 {
 	return 1;
 }
 
 void
-s3c2410_attach(struct device *parent, struct device *self, void *aux)
+s3c2410_attach(device_t parent, device_t self, void *aux)
 {
-	struct s3c24x0_softc *sc = (struct s3c24x0_softc *) self;
+	struct s3c24x0_softc *sc = device_private(self);
 	bus_space_tag_t iot;
 	const char *which_registers;	/* for panic message */
 
@@ -101,6 +104,7 @@ s3c2410_attach(struct device *parent, struct device *self, void *aux)
 	which_registers=(which); goto abort; }while(/*CONSTCOND*/0)
 
 	s3c2xx0_softc = &(sc->sc_sx);
+	sc->sc_sx.sc_dev = self;
 	sc->sc_sx.sc_iot = iot = &s3c2xx0_bs_tag;
 
 	if (bus_space_map(iot,
@@ -136,9 +140,15 @@ s3c2410_attach(struct device *parent, struct device *self, void *aux)
 		S3C24X0_MEMCTL_SIZE, 0, &sc->sc_sx.sc_memctl_ioh))
 		FAIL("MEMC");
 	/* Clock manager */
-	if (bus_space_map(iot, S3C2410_CLKMAN_BASE,
-		S3C24X0_CLKMAN_SIZE, 0, &sc->sc_sx.sc_clkman_ioh))
+#ifdef S3C2440
+	if (bus_space_map(iot, S3C2440_CLKMAN_BASE,
+		S3C2440_CLKMAN_SIZE, 0, &sc->sc_sx.sc_clkman_ioh))
 		FAIL("CLK");
+#else
+	if (bus_space_map(iot, S3C2410_CLKMAN_BASE,
+		S3C2410_CLKMAN_SIZE, 0, &sc->sc_sx.sc_clkman_ioh))
+		FAIL("CLK");
+#endif /* S3C2440 */
 
 #if 0
 	/* Real time clock */
@@ -176,10 +186,9 @@ abort:
 }
 
 int
-s3c2410_search(struct device * parent, struct cfdata * cf,
-	       const int *ldesc, void *aux)
+s3c2410_search(device_t parent, cfdata_t cf, const int *ldesc, void *aux)
 {
-	struct s3c24x0_softc *sc = (struct s3c24x0_softc *) parent;
+	struct s3c24x0_softc *sc = device_private(parent);
 	struct s3c2xx0_attach_args aa;
 
 	aa.sa_sc = sc;
@@ -209,18 +218,58 @@ s3c24x0_clock_freq2(vaddr_t clkman_base, int *fclk, int *hclk, int *pclk)
 	uint32_t pllcon, divn;
 	int mdiv, pdiv, sdiv;
 	int f, h, p;
+#ifdef S3C2440
+	uint32_t camdivn;
+#endif
 
 	pllcon = *(volatile uint32_t *)(clkman_base + CLKMAN_MPLLCON);
 	divn = *(volatile uint32_t *)(clkman_base + CLKMAN_CLKDIVN);
+#ifdef S3C2440
+	camdivn = *(volatile uint32_t *)(clkman_base + CLKMAN_CAMDIVN);
+#endif
 
 	mdiv = (pllcon & PLLCON_MDIV_MASK) >> PLLCON_MDIV_SHIFT;
 	pdiv = (pllcon & PLLCON_PDIV_MASK) >> PLLCON_PDIV_SHIFT;
 	sdiv = (pllcon & PLLCON_SDIV_MASK) >> PLLCON_SDIV_SHIFT;
 
+#ifdef S3C2440
+	f = (2* (mdiv + 8) * S3C2XX0_XTAL_CLK) / ((pdiv + 2) * (1 << sdiv));
+	h = f;
+
+	switch( (divn & CLKDIVN_HDIVN_MASK) >> CLKDIVN_HDIVN_SHIFT)
+	{
+		case 0:
+			/* 00b: HCLK = FCLK/1 */
+			break;
+		case 1:
+			/* 01b HCLK = FCLK/2 */
+			h /= 2;
+			break;
+		case 2:
+			/* 10b: HCLK = FCLK/4 when CAMDIVN[9] (HCLK4_HALF) = 0
+			 *      HCLK = FCLK/8 when CAMDIVN[9] (HCLK4_HALF) = 1 */
+			if( camdivn & CLKCAMDIVN_HCLK4_HALF )
+				h /= 8;
+			else
+				h /= 4;
+			break;
+		case 3:
+			/* 11b: HCLK = FCLK/3 when CAMDIVN[8] (HCLK3_HALF) = 0
+			 *      HCLK = FCLK/6 when CAMDIVN[8] (HCLK3_HALF) = 1 */
+			if( camdivn & CLKCAMDIVN_HCLK3_HALF )
+				h /= 6;
+			else
+				h /= 3;
+			break;
+	}
+
+#else
 	f = ((mdiv + 8) * S3C2XX0_XTAL_CLK) / ((pdiv + 2) * (1 << sdiv));
 	h = f;
 	if (divn & CLKDIVN_HDIVN)
 		h /= 2;
+#endif
+
 	p = h;
 	if (divn & CLKDIVN_PDIVN)
 		p /= 2;
@@ -256,4 +305,25 @@ s3c2410_softreset(void)
 		WTCON_CLKSEL_16 | WTCON_ENRST;
 }
 
+void
+s3c24x0_clkman_config(u_int clk, bool enable)
+{
+	struct s3c2xx0_softc	*sc;
+	bus_space_tag_t		iot;
+	bus_space_handle_t	ioh;
+	uint32_t		rv;
 
+	if (__predict_true(s3c2xx0_softc != NULL)) {
+		sc = s3c2xx0_softc;
+		iot = sc->sc_iot;
+		ioh = sc->sc_clkman_ioh;
+
+		rv = bus_space_read_4(iot, ioh, CLKMAN_CLKCON);
+		rv &= ~clk;
+		if (enable)
+			rv |= clk;
+		bus_space_write_4(iot, ioh, CLKMAN_CLKCON, rv);
+		return;
+	}
+	panic("s3c24x0_clkman_config: not bootstrapped");
+}

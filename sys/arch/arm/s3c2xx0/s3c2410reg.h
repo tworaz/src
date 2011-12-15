@@ -39,9 +39,6 @@
 #ifndef _ARM_S3C2XX0_S3C2410REG_H_
 #define	_ARM_S3C2XX0_S3C2410REG_H_
 
-/* common definitions for S3C2800, S3C2400 and S3C2410 */
-#include <arm/s3c2xx0/s3c2xx0reg.h>
-/* common definitions for S3C2400 and S3C2410 */
 #include <arm/s3c2xx0/s3c24x0reg.h>
 
 /*
@@ -60,6 +57,7 @@
 #define	S3C2410_DMAC_BASE	0x4b000000
 #define	S3C2410_DMAC_SIZE 	0xe4
 #define	S3C2410_CLKMAN_BASE	0x4c000000 /* clock & power management */
+#define	S3C2410_CLKMAN_SIZE     0x18
 #define	S3C2410_LCDC_BASE 	0x4d000000 /* LCD controller */
 #define	S3C2410_NANDFC_BASE	0x4e000000 /* NAND Flash controller */
 #define	S3C2410_NANDFC_SIZE	0x18
@@ -110,34 +108,6 @@
 #define	S3C2410_INT_RXD0	(S3C2410_SUBIRQ_MIN+0)	/* UART0 Rx interrupt */
 
 #define	S3C2410_INTCTL_SIZE	0x20
-
-
-/* Clock control */
-#define	CLKMAN_LOCKTIME	0x00
-#define	CLKMAN_MPLLCON	0x04
-#define	CLKMAN_UPLLCON	0x08
-#define	CLKMAN_CLKCON	0x0c
-#define	 CLKCON_SPI 	(1<<18)
-#define	 CLKCON_IIS 	(1<<17)
-#define	 CLKCON_IIC 	(1<<16)
-#define	 CLKCON_ADC 	(1<<15)
-#define	 CLKCON_RTC 	(1<<14)
-#define	 CLKCON_GPIO 	(1<<13)
-#define	 CLKCON_UART2 	(1<<12)
-#define	 CLKCON_UART1 	(1<<11)
-#define	 CLKCON_UART0	(1<<10)	/* PCLK to UART0 */
-#define	 CLKCON_SDI	(1<<9)
-#define	 CLKCON_TIMER	(1<<8)	/* PCLK to TIMER */
-#define	 CLKCON_USBD	(1<<7)	/* PCLK to USB device controller */
-#define	 CLKCON_USBH	(1<<6)	/* PCLK to USB host controller */
-#define	 CLKCON_LCDC	(1<<5)	/* PCLK to LCD controller */
-#define	 CLKCON_NANDFC	(1<<4)	/* PCLK to NAND Flash controller */
-#define	 CLKCON_IDLE	(1<<2)	/* 1=transition to IDLE mode */
-#define	 CLKCON_STOP	(1<<0)	/* 1=transition to STOP mode */
-#define	CLKMAN_CLKSLOW	0x10
-#define	CLKMAN_CLKDIVN	0x14
-#define	 CLKDIVN_HDIVN	(1<<1)	/* hclk=fclk/2 */
-#define	 CLKDIVN_PDIVN	(1<<0)	/* pclk=hclk/2 */
 
 /* NAND Flash controller */
 #define	NANDFC_NFCONF	0x00	/* Configuration */
@@ -200,7 +170,7 @@
 /* XXX: ADCCON register is common to both S3C2410 and S3C2400,
  *      but other registers are different.
  */
-#define	ADC_ADCCON	0x00
+#define	ADC_ADCCON		0x00
 #define	 ADCCON_ENABLE_START	(1<<0)
 #define	 ADCCON_READ_START	(1<<1)
 #define	 ADCCON_STDBM    	(1<<2)
@@ -211,7 +181,7 @@
 #define	 ADCCON_PRSCEN  	(1<<14)
 #define	 ADCCON_ECFLG   	(1<<15)
 
-#define	ADC_ADCTSC 	0x04
+#define	ADC_ADCTSC 		0x04
 #define	 ADCTSC_XY_PST   	0x03
 #define	 ADCTSC_AUTO_PST    	(1<<2)
 #define	 ADCTSC_PULL_UP		(1<<3)
@@ -220,10 +190,33 @@
 #define	 ADCTSC_YP_SEN		(1<<6)
 #define	 ADCTSC_YM_SEN		(1<<7)
 #define	 ADCTSC_UD_SEN		(1<<8)
-#define	ADC_ADCDLY	0x08
-#define	ADC_ADCDAT0	0x0c
-#define	ADC_ADCDAT1	0x10
+#define	ADC_ADCDLY		0x08
+#define	ADC_ADCDAT0		0x0c
+#define	ADC_ADCDAT1		0x10
 
 #define	ADCDAT_DATAMASK  	0x3ff
+
+/* IIC Bus Interface */
+#define IIC_IICCON		0x00
+#define  IICCON_ACKEN		(1<<7)
+#define  IICCON_TXDIV		(1<<6)
+#define  IICCON_IRQEN		(1<<5)
+#define  IICCON_IRQPEND		(1<<4)
+#define  IICCON_SCALEMASK	0x0f
+#define IIC_IICSTAT		0x04
+#define  IICSTAT_MODEMASK	(3<<6)
+#define  IICSTAT_MASTER_RX	(2<<6)
+#define  IICSTAT_MASTER_TX	(3<<6)
+#define  IICSTAT_SLAVE_RX	(0<<6)
+#define  IICSTAT_SLAVE_TX	(1<<6)
+#define  IICSTAT_START		(1<<5)
+#define  IICSTAT_BUSBUSY	(1<<5)
+#define  IICSTAT_TXRXEN		(1<<4)
+#define  IICSTAT_ARBITR		(1<<3)
+#define  IICSTAT_ADDRSLAVE	(1<<2)
+#define  IICSTAT_ADDR0		(1<<1)
+#define  IICSTAT_LASTBIT	(1<<0)
+#define IIC_IICADD		0x08
+#define IIC_IICDS		0x0C
 
 #endif /* _ARM_S3C2XX0_S3C2410REG_H_ */

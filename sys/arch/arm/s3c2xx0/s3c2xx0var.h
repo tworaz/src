@@ -39,7 +39,7 @@
 #include <sys/device.h>
 
 struct s3c2xx0_softc {
-	struct device   	sc_dev;
+	device_t	  	sc_dev;
 
 	bus_space_tag_t  	sc_iot;
 
@@ -47,7 +47,9 @@ struct s3c2xx0_softc {
 	bus_space_handle_t	sc_memctl_ioh; 	/* Memory controller */
 	bus_space_handle_t	sc_clkman_ioh; 	/* Clock manager */
 	bus_space_handle_t	sc_gpio_ioh;  	/* GPIO */
+#if 0
 	bus_space_handle_t	sc_rtc_ioh; 	/* real time clock */
+#endif
 
 	bus_dma_tag_t  		sc_dmat;
 

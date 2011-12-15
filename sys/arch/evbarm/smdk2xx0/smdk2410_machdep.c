@@ -384,7 +384,7 @@ static const struct pmap_devmap smdk2410_devmap[] = {
 	{
 		CLKMAN_VBASE,
 		_A(S3C2410_CLKMAN_BASE),
-		_S(S3C24X0_CLKMAN_SIZE),
+		_S(S3C2410_CLKMAN_SIZE),
 		VM_PROT_READ|VM_PROT_WRITE, PTE_NOCACHE,
 	},
 	{	/* UART registers for UART0, 1, 2. */

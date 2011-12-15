@@ -44,5 +44,6 @@ struct s3c24x0_softc {
 void	s3c24x0_clock_freq(struct s3c2xx0_softc *);
 void	s3c24x0_clock_freq2(vaddr_t, int *, int *, int *);
 void	*s3c24x0_intr_establish(int, int, int, s3c2xx0_irq_handler_t, void *);
+void	s3c24x0_clkman_config(u_int clk, bool enable);
 
 #endif /* _ARM_S3C24X0VAR_H_ */

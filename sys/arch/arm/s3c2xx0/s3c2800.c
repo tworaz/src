@@ -53,13 +53,12 @@ __KERNEL_RCSID(0, "$NetBSD: s3c2800.c,v 1.12 2011/07/01 20:31:39 dyoung Exp $");
 #include "opt_cpuoptions.h"
 
 /* prototypes */
-static int	s3c2800_match(struct device *, struct cfdata *, void *);
-static void	s3c2800_attach(struct device *, struct device *, void *);
-static int	s3c2800_search(struct device *, struct cfdata *,
-			       const int *, void *);
+static int	s3c2800_match(device_t, cfdata_t, void *);
+static void	s3c2800_attach(device_t, device_t, void *);
+static int	s3c2800_search(device_t, cfdata_t, const int *, void *);
 
 /* attach structures */
-CFATTACH_DECL(ssio, sizeof(struct s3c2800_softc), s3c2800_match, s3c2800_attach,
+CFATTACH_DECL_NEW(ssio, sizeof(struct s3c2800_softc), s3c2800_match, s3c2800_attach,
     NULL, NULL);
 
 extern struct bus_space s3c2xx0_bs_tag;
@@ -84,15 +83,15 @@ s3c2800_print(void *aux, const char *name)
 }
 
 int
-s3c2800_match(struct device *parent, struct cfdata *match, void *aux)
+s3c2800_match(device_t parent, cfdata_t match, void *aux)
 {
 	return 1;
 }
 
 void
-s3c2800_attach(struct device *parent, struct device *self, void *aux)
+s3c2800_attach(device_t parent, device_t self, void *aux)
 {
-	struct s3c2800_softc *sc = (struct s3c2800_softc *) self;
+	struct s3c2800_softc *sc = device_private(self);
 	bus_space_tag_t iot;
 	const char *which_registers;	/* for panic message */
 
@@ -100,6 +99,7 @@ s3c2800_attach(struct device *parent, struct device *self, void *aux)
 	which_registers=(which); goto abort; }while(/*CONSTCOND*/0)
 
 	s3c2xx0_softc = &(sc->sc_sx);
+	sc->sc_sx.sc_dev = self;
 	sc->sc_sx.sc_iot = iot = &s3c2xx0_bs_tag;
 
 	if (bus_space_map(iot,
@@ -166,10 +166,9 @@ abort:
 }
 
 int
-s3c2800_search(struct device * parent, struct cfdata * cf,
-	       const int *ldesc, void *aux)
+s3c2800_search(device_t parent, cfdata_t cf, const int *ldesc, void *aux)
 {
-	struct s3c2800_softc *sc = (struct s3c2800_softc *) parent;
+	struct s3c2800_softc *sc = device_private(parent);
 	struct s3c2xx0_attach_args aa;
 
 	aa.sa_sc = sc;

@@ -31,7 +31,7 @@
 
 
 /*
- * Samsung S3C2410X/2400 processor is ARM920T based integrated CPU
+ * Samsung S3C2410X/2400/2440 processor is ARM920T based integrated CPU
  *
  * Reference:
  *  S3C2410X User's Manual 
@@ -39,6 +39,8 @@
  */
 #ifndef _ARM_S3C2XX0_S3C24X0REG_H_
 #define	_ARM_S3C2XX0_S3C24X0REG_H_
+
+#include <arm/s3c2xx0/s3c2xx0reg.h>
 
 /* Memory controller */
 #define	MEMCTL_BWSCON   	0x00	/* Bus width and wait status */
@@ -146,6 +148,24 @@
 #define	CLKMAN_LOCKTIME 0x00	/* PLL lock time */
 #define	CLKMAN_MPLLCON 	0x04	/* MPLL control */
 #define	CLKMAN_UPLLCON 	0x08	/* UPLL control */
+#define	CLKMAN_CLKCON	0x0c
+#define	 CLKCON_SPI 	(1<<18)
+#define	 CLKCON_IIS 	(1<<17)
+#define	 CLKCON_IIC 	(1<<16)
+#define	 CLKCON_ADC 	(1<<15)
+#define	 CLKCON_RTC 	(1<<14)
+#define	 CLKCON_GPIO 	(1<<13)
+#define	 CLKCON_UART2 	(1<<12)
+#define	 CLKCON_UART1 	(1<<11)
+#define	 CLKCON_UART0	(1<<10)	/* PCLK to UART0 */
+#define	 CLKCON_SDI	(1<<9)
+#define	 CLKCON_TIMER	(1<<8)	/* PCLK to TIMER */
+#define	 CLKCON_USBD	(1<<7)	/* PCLK to USB device controller */
+#define	 CLKCON_USBH	(1<<6)	/* PCLK to USB host controller */
+#define	 CLKCON_LCDC	(1<<5)	/* PCLK to LCD controller */
+#define	 CLKCON_NANDFC	(1<<4)	/* PCLK to NAND Flash controller */
+#define	 CLKCON_IDLE	(1<<2)	/* 1=transition to IDLE mode */
+#define	 CLKCON_STOP	(1<<0)	/* 1=transition to STOP mode */
 #define	 PLLCON_MDIV_SHIFT	12
 #define	 PLLCON_MDIV_MASK	(0xff<<PLLCON_MDIV_SHIFT)
 #define	 PLLCON_PDIV_SHIFT	4
@@ -161,10 +181,8 @@
 #define	 CLKSLOW_VAL_MASK  0x0f	/* divider value for slow clock */
 
 #define	CLKMAN_CLKDIVN	0x14	/* Software reset control */
-#define	 CLKDIVN_HDIVN	(1<<1)
-#define	 CLKDIVN_PDIVN	(1<<0)
-
-#define	S3C24X0_CLKMAN_SIZE	0x18
+#define	 CLKDIVN_HDIVN	(1<<1)	/* hclk=fclk/2 */
+#define	 CLKDIVN_PDIVN	(1<<0)	/* pclk=hclk/2 */
 
 /* LCD controller */
 #define	LCDC_LCDCON1	0x00	/* control 1 */

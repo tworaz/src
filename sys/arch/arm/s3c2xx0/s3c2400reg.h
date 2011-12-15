@@ -39,8 +39,7 @@
 #ifndef _ARM_S3C2400_S3C24X0REG_H_
 #define	_ARM_S3C2400_S3C24X0REG_H_
 
-/* common definitions for S3C2800, S3C2400X and S3C2410X */
-#include <arm/s3c2xx0/s3c2xx0reg.h>
+#include <arm/s3c2xx0/s3c24x0reg.h>
 
 /*
  * Memory Map

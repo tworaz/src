@@ -68,10 +68,11 @@ __KERNEL_RCSID(0, "$NetBSD: s3c2410_extint.c,v 1.11 2011/07/01 20:31:39 dyoung E
 #define	N_EXTINT	(S3C2410_EXTINT_MAX - EXTINT_CASCADE_MIN +1)
 
 struct ssextio_softc {
-	struct device	sc_dev;
+	device_t	sc_dev;
 
-	bus_space_tag_t sc_iot;
+	bus_space_tag_t	sc_iot;
 	bus_space_handle_t sc_ioh;
+	bus_dma_tag_t	sc_dmat;
 
 	uint32_t   sc_pending;
 	uint32_t   sc_mask;
@@ -92,10 +93,9 @@ static struct	ssextio_softc *ssextio_softc = NULL;
 #define	EXTINT_8_23	2
 
 /* prototypes */
-static int	ssextio_match(struct device *, struct cfdata *, void *);
-static void	ssextio_attach(struct device *, struct device *, void *);
-static int 	ssextio_search(struct device *, struct cfdata *,
-			       const int *, void *);
+static int	ssextio_match(device_t, cfdata_t, void *);
+static void	ssextio_attach(device_t, device_t, void *);
+static int 	ssextio_search(device_t, cfdata_t, const int *, void *);
 static int	ssextio_print(void *, const char *);
 
 static int	ssextio_cascaded_intr(void *);
@@ -110,7 +110,7 @@ update_hw_mask(void)
 
 
 /* attach structures */
-CFATTACH_DECL(ssextio, sizeof(struct ssextio_softc), ssextio_match, ssextio_attach,
+CFATTACH_DECL_NEW(ssextio, sizeof(struct ssextio_softc), ssextio_match, ssextio_attach,
     NULL, NULL);
 
 static int
@@ -126,7 +126,7 @@ ssextio_print(void *aux, const char *name)
 }
 
 int
-ssextio_match(struct device *parent, struct cfdata *match, void *aux)
+ssextio_match(device_t parent, cfdata_t match, void *aux)
 {
 #if S3C2410_EXTINT_MAX < 4
 	/* better not configure this driver */
@@ -140,17 +140,19 @@ ssextio_match(struct device *parent, struct cfdata *match, void *aux)
 }
 
 void
-ssextio_attach(struct device *parent, struct device *self, void *aux)
+ssextio_attach(device_t parent, device_t self, void *aux)
 {
-	struct ssextio_softc *sc = (struct ssextio_softc*)self;
-	struct s3c24x0_softc *cpuc = (struct s3c24x0_softc *)parent;
+	struct ssextio_softc *sc = device_private(self);
+	struct s3c24x0_softc *cpuc = device_private(parent);
 
 	aprint_normal("\n");
 
 	ssextio_softc = sc;
 
+	sc->sc_dev = self;
 	sc->sc_iot = cpuc->sc_sx.sc_iot;
 	sc->sc_ioh = cpuc->sc_sx.sc_gpio_ioh;
+	sc->sc_dmat = cpuc->sc_sx.sc_dmat;
 
 	sc->sc_pending = 0;
 	sc->sc_mask = ~0;
@@ -168,22 +170,20 @@ ssextio_attach(struct device *parent, struct device *self, void *aux)
 }
 
 static int
-ssextio_search(struct device *parent, struct cfdata *cf,
-	       const int *ldesc, void *aux)
+ssextio_search(device_t parent, cfdata_t cf, const int *ldesc, void *aux)
 {
-	struct ssextio_softc *sc = (struct ssextio_softc *)parent;
-	struct s3c24x0_softc *cpuc =(struct s3c24x0_softc *) device_parent(&sc->sc_dev);
+	struct ssextio_softc *sc = device_private(parent);
 	struct s3c2xx0_attach_args sa;
 
 	sa.sa_sc = sc;
-        sa.sa_iot = sc->sc_iot;
-        sa.sa_addr = cf->cf_loc[SSEXTIOCF_ADDR];
-        sa.sa_size = cf->cf_loc[SSEXTIOCF_SIZE];
-        sa.sa_intr = cf->cf_loc[SSEXTIOCF_INTR];
-	sa.sa_dmat = cpuc->sc_sx.sc_dmat;
+	sa.sa_iot = sc->sc_iot;
+	sa.sa_addr = cf->cf_loc[SSEXTIOCF_ADDR];
+	sa.sa_size = cf->cf_loc[SSEXTIOCF_SIZE];
+	sa.sa_intr = cf->cf_loc[SSEXTIOCF_INTR];
+	sa.sa_dmat = sc->sc_dmat;
 
-        if (config_match(parent, cf, &sa))
-                config_attach(parent, cf, &sa, ssextio_print);
+	if (config_match(parent, cf, &sa))
+		config_attach(parent, cf, &sa, ssextio_print);
 
         return 0;
 }
