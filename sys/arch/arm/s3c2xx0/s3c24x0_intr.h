@@ -51,6 +51,20 @@ extern int s3c24x0_soft_imask[];
 
 #include <arm/s3c2xx0/s3c2xx0_intr.h>
 
+static inline void
+s3c24x0_intr_mask(int irqno)
+{
+	int mask = 1 << irqno;
+	s3c2xx0_mask_interrupts(mask);
+};
+
+static inline void
+s3c24x0_intr_unmask(int irqno)
+{
+	int mask = 1 << irqno;
+	s3c2xx0_unmask_interrupts(mask);
+};
+
 #endif /* ! _LOCORE */
 
 #endif /* _S3C24X0_INTR_H_ */

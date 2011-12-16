@@ -21,6 +21,9 @@ file	arch/arm/s3c2xx0/s3c2410_extint.c	ssextio
 # UART
 file	arch/arm/s3c2xx0/sscom_s3c2410.c	sscom
 
+# I2C
+file	arch/arm/s3c2xx0/s3c24x0_i2c.c		ssiic
+
 # OHCI USB controller
 attach	ohci at ssio with ohci_ssio
 file	arch/arm/s3c2xx0/ohci_s3c24x0.c		ohci_ssio
@@ -39,3 +42,8 @@ file	arch/arm/s3c2xx0/s3c2410_spi.c		ssspi
 device	sswdog: sysmon_wdog
 attach	sswdog at ssio
 file	arch/arm/s3c2xx0/s3c24x0_wdog.c		sswdog
+
+# Inter-Integrated Circuit controller
+device	ssiic: i2cbus
+attach	ssiic at ssextio
+file	arch/arm/s3c2xx0/ssiic.c		ssiic
