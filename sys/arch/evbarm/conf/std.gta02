@@ -1,0 +1,36 @@
+#
+# Standard options for NetBSD/evbarm Openmoko Freerunner
+#
+
+machine	evbarm arm
+include		"conf/std"	# MI standard options
+
+# Config definitions for GTA02
+include "arch/evbarm/conf/files.gta02"
+
+options 	EXEC_ELF32
+options 	EXEC_AOUT
+options 	EXEC_SCRIPT
+
+# GTA02 is based on S3C2442
+options 	S3C2440
+
+# To support easy transit to ../arch/arm/arm32
+options 	ARM32
+
+#options 	ARM32_NEW_VM_LAYOUT	# Not yet ready for prime-time
+
+options		SSCOM_S3C2410
+
+makeoptions	BOARDMKFRAG="${THISARM}/conf/mk.gta02"
+makeoptions	KERNEL_BASE_PHYS=0x30200000
+makeoptions	KERNEL_BASE_VIRT=0xc0200000
+options 	KERNEL_BASE_EXT=0xc0000000
+
+options 	KERNEL_RAM_OFFSET=0x00200000
+
+options 	S3C2XX0_XTAL_CLK=12000000		# 12MHz Xtal
+options 	SMDK2XX0_CLOCK_CONFIG="2,1,0x2A,1,0"	# to get 400MHz
+options		SDRAM_START=0x30000000
+
+options 	ARM_INTR_IMPL="<arch/arm/s3c2xx0/s3c2410_intr.h>"
