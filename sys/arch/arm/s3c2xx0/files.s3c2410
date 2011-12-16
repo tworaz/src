@@ -34,3 +34,8 @@ file arch/arm/s3c2xx0/s3c24x0_lcd.c		lcd needs-flag
 device	ssspi {[intr=-1]}
 attach	ssspi at ssio
 file	arch/arm/s3c2xx0/s3c2410_spi.c		ssspi
+
+# Watchdog Timer
+device	sswdog: sysmon_wdog
+attach	sswdog at ssio
+file	arch/arm/s3c2xx0/s3c24x0_wdog.c		sswdog
