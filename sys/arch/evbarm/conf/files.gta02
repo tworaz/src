@@ -37,3 +37,13 @@ file	arch/evbarm/gta02/gta02bt.c		gta02bt
 # Platform dependant attachment for PCF50633
 attach	pcf50633bus at iic with pcf50633_ssiic
 file	arch/evbarm/gta02/pcf50633_ssiic.c	pcf50633_ssiic
+
+# NXP/Philips PCF50633 power button handler
+device 	pcf50633pwr: sysmon_power
+attach	pcf50633pwr at pcf50633bus
+file	arch/evbarm/gta02/pcf50633pwr.c		pcf50633pwr
+
+# OpenMoko PCF50633 battery driver
+device	gta02bat: sysmon_envsys
+attach	gta02bat at pcf50633bus
+file	arch/evbarm/gta02/gta02bat.c		gta02bat

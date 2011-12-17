@@ -185,6 +185,8 @@ gta02bt0	at ssio0
 # NXP/Philips PCF50633
 pcf50633bus0	at iic? addr 0x73	# Device Bus
 pcf50633rtc0	at pcf50633bus0		# Real Time Clock
+pcf50633pwr0	at pcf50633bus0		# Power button handler
+gta02bat0	at pcf50633bus0		# OpenMoko battery
 #options	PCF50633BUS_DEBUG
 
 # SMedia GLAMO
