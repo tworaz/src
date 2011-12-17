@@ -28,3 +28,8 @@ file	arch/evbarm/gta02/gta02vib.c		gta02vib
 device	gta02leds
 attach	gta02leds at ssio
 file	arch/evbarm/gta02/gta02leds.c		gta02leds
+
+# OpenMoko bluetooth
+device	gta02bt
+attach	gta02bt at ssio
+file	arch/evbarm/gta02/gta02bt.c		gta02bt

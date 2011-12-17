@@ -179,6 +179,9 @@ gta02vib0	at ssio0
 # Leds
 gta02leds0	at ssio0
 
+# Bluetooth on/off switch
+gta02bt0	at ssio0
+
 # SMedia GLAMO
 glamofb*	at ssio?	# Framebuffer console
 
