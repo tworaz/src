@@ -171,3 +171,7 @@ file	dev/i2c/g760a.c			g760a
 device	ibmhawk: sysmon_envsys
 attach	ibmhawk at iic
 file	dev/i2c/ibmhawk.c		ibmhawk
+
+# NXP/Philips PCF50633 Device Bus
+device	pcf50633bus {}: sysmon_taskq
+file	dev/i2c/pcf50633bus.c		pcf50633bus
