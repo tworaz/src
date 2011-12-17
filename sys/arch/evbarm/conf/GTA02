@@ -176,6 +176,9 @@ gta02aux0	at ssextio0
 # Vibrator
 gta02vib0	at ssio0
 
+# Leds
+gta02leds0	at ssio0
+
 # SMedia GLAMO
 glamofb*	at ssio?	# Framebuffer console
 

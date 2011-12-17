@@ -23,3 +23,8 @@ file	arch/evbarm/gta02/gta02aux.c		gta02aux
 device	gta02vib
 attach	gta02vib at ssio
 file	arch/evbarm/gta02/gta02vib.c		gta02vib
+
+# OpenMoko leds driver
+device	gta02leds
+attach	gta02leds at ssio
+file	arch/evbarm/gta02/gta02leds.c		gta02leds
