@@ -175,3 +175,8 @@ file	dev/i2c/ibmhawk.c		ibmhawk
 # NXP/Philips PCF50633 Device Bus
 device	pcf50633bus {}: sysmon_taskq
 file	dev/i2c/pcf50633bus.c		pcf50633bus
+
+# NXP/Philips PCF50633 Real Time Clock
+device	pcf50633rtc
+attach	pcf50633rtc at pcf50633bus
+file	dev/i2c/pcf50633rtc.c		pcf50633rtc
