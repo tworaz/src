@@ -173,6 +173,9 @@ iic*		at ssiic?
 # AUX button
 gta02aux0	at ssextio0
 
+# Vibrator
+gta02vib0	at ssio0
+
 # SMedia GLAMO
 glamofb*	at ssio?	# Framebuffer console
 
