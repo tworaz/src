@@ -45,6 +45,7 @@ __KERNEL_RCSID(0, "$NetBSD: ohci_s3c24x0.c,v 1.8 2011/07/01 20:31:39 dyoung Exp 
 #include <sys/bus.h>
 
 #include <arm/s3c2xx0/s3c24x0var.h>
+#include <arm/s3c2xx0/s3c24x0reg.h>
 
 #include <dev/usb/usb.h>
 #include <dev/usb/usbdi.h>
@@ -113,7 +114,8 @@ ohci_ssio_attach(device_t parent, device_t self, void *aux)
 	sc->sc.sc_bus.dmatag = sa->sa_dmat;
 
 	/* Enable the device. */
-	/* XXX: provide clock to USB block */
+	s3c24x0_clkman_config(CLKCON_USBD, false);
+	s3c24x0_clkman_config(CLKCON_USBH, true);
 
 	/* establish the interrupt. */
 	sc->sc_ih = s3c24x0_intr_establish(sa->sa_intr, IPL_USB, IST_NONE, ohci_intr, sc);
@@ -137,5 +139,7 @@ ohci_ssio_attach(device_t parent, device_t self, void *aux)
 int
 ohci_ssio_detach(device_t self, int flags)
 {
+
+	s3c24x0_clkman_config(CLKCON_USBH, false);
 	return (0);
 }
