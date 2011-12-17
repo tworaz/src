@@ -8,3 +8,8 @@ include "arch/arm/s3c2xx0/files.s3c2410"
 defparam	opt_smdk2xx0.h SMDK2XX0_CLOCK_CONFIG
 
 file	arch/evbarm/gta02/gta02_machdep.c
+
+# Framebuffer
+device	glamofb: rasops16, wsemuldisplaydev, vcons
+attach	glamofb at ssio
+file	arch/evbarm/gta02/glamofb.c		glamofb

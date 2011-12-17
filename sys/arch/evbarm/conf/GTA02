@@ -158,7 +158,7 @@ sswdog0		at ssio0 addr 0x53000000
 # Integrated UART
 #sscom0		at ssio? index 0
 #sscom1		at ssio? index 1
-sscom2		at ssio? index 2
+#sscom2		at ssio? index 2
 #options 	SSCOM0CONSOLE
 #options 	SSCOM1CONSOLE
 #options 	SSCOM2CONSOLE
@@ -169,6 +169,23 @@ ssiic*		at ssextio? addr 0x54000000 intr 27
 iic*		at ssiic?
 #options 	S3C24X0_IIC_CLK=100000		# IIC clock frequency in HZ
 #options	S3C24X0_IIC_DEBUG
+
+# SMedia GLAMO
+glamofb*	at ssio?	# Framebuffer console
+
+# wsdisplay configuration
+wsdisplay*	at wsemuldisplaydev? console 1
+options 	WSEMUL_VT100			# sun terminal emulation
+options 	WS_DEFAULT_FG=WSCOL_LIGHT_WHITE
+options 	WS_DEFAULT_BG=WSCOL_BLACK
+options		WS_KERNEL_FG=WSCOL_GREEN
+options		WS_KERNEL_BG=WSCOL_BLACK
+#options 	WSDISPLAY_COMPAT_USL		# VT handling
+#options 	WSDISPLAY_COMPAT_RAWKBD		# can get raw scancodes
+#options 	WSDISPLAY_DEFAULTSCREENS=4
+#options	FONT_VT220L8x10
+#options	FONT_VT220L8x16
+options		FONT_QVSS8x15
 
 # SPI port
 ssspi0		at ssio? index 0
