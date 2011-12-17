@@ -182,6 +182,11 @@ gta02leds0	at ssio0
 # Bluetooth on/off switch
 gta02bt0	at ssio0
 
+# NXP/Philips PCF50633
+pcf50633bus0	at iic? addr 0x73	# Device Bus
+pcf50633rtc0	at pcf50633bus0		# Real Time Clock
+#options	PCF50633BUS_DEBUG
+
 # SMedia GLAMO
 glamofb*	at ssio?	# Framebuffer console
 

@@ -33,3 +33,7 @@ file	arch/evbarm/gta02/gta02leds.c		gta02leds
 device	gta02bt
 attach	gta02bt at ssio
 file	arch/evbarm/gta02/gta02bt.c		gta02bt
+
+# Platform dependant attachment for PCF50633
+attach	pcf50633bus at iic with pcf50633_ssiic
+file	arch/evbarm/gta02/pcf50633_ssiic.c	pcf50633_ssiic
