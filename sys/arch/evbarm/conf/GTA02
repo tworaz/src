@@ -189,6 +189,11 @@ pcf50633pwr0	at pcf50633bus0		# Power button handler
 gta02bat0	at pcf50633bus0		# OpenMoko battery
 #options	PCF50633BUS_DEBUG
 
+# Touch screen controller
+ssts0           at ssio0 addr 0x58000000
+wsmouse*        at ssts0 mux 0
+#options        SSTS_DEBUG
+
 # SMedia GLAMO
 glamofb*	at ssio?	# Framebuffer console
 

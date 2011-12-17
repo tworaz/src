@@ -47,3 +47,8 @@ file	arch/arm/s3c2xx0/s3c24x0_wdog.c		sswdog
 device	ssiic: i2cbus
 attach	ssiic at ssextio
 file	arch/arm/s3c2xx0/ssiic.c		ssiic
+
+# Touchscreen controller
+device	ssts: wsmousedev, tpcalib
+attach	ssts at ssio
+file	arch/arm/s3c2xx0/s3c24x0_ts.c		ssts
