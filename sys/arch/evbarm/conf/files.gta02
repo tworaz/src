@@ -13,3 +13,8 @@ file	arch/evbarm/gta02/gta02_machdep.c
 device	glamofb: rasops16, wsemuldisplaydev, vcons
 attach	glamofb at ssio
 file	arch/evbarm/gta02/glamofb.c		glamofb
+
+# AUX button driver
+device	gta02aux
+attach	gta02aux at ssextio
+file	arch/evbarm/gta02/gta02aux.c		gta02aux

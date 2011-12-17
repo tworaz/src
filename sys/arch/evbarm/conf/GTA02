@@ -170,6 +170,9 @@ iic*		at ssiic?
 #options 	S3C24X0_IIC_CLK=100000		# IIC clock frequency in HZ
 #options	S3C24X0_IIC_DEBUG
 
+# AUX button
+gta02aux0	at ssextio0
+
 # SMedia GLAMO
 glamofb*	at ssio?	# Framebuffer console
 
