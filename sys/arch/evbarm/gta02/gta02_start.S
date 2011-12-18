@@ -52,6 +52,22 @@
 #endif
 #define KERNEL_TEXT_ADDR	(SDRAM_START+KERNEL_RAM_OFFSET)
 
+#ifndef GTA02_UPLLCON_CONFIG
+#error "GTA02_UPLL_CONFIG has to be defined!"
+#endif
+
+#ifndef GTA02_MPLLCON_CONFIG
+#error "GTA02_MPLLCON_CONFIG has to be defined!"
+#endif
+
+#ifndef GTA02_CLKDIVN_CONFIG
+#error "GTA02_CLKDIVN_CONFIG has to be defined!"
+#endif
+
+#ifndef GTA02_CAMDIVN_CONFIG
+#error "GTA02_CAMDIVN_CONFIG has to be defined!"
+#endif
+
 	.global	_C_LABEL(gta02_start)
 _C_LABEL(gta02_start):
 	/* Disable interrupt */
@@ -64,27 +80,23 @@ _C_LABEL(gta02_start):
 	bic	r0, r0, #CPU_CONTROL_DC_ENABLE
 	mcr	p15, 0, r0, c1, c0, 0
 
-#ifdef SMDK2XX0_CLOCK_CONFIG
-	adr	r4, clock_config_data
-
+	/* Configure clocks */
 	mov	r2, #S3C2410_CLKMAN_BASE
-	mov r0, #0
-	str r0, [r2, #CLKMAN_CAMDIVN]
-	ldr	r1, [r2, #CLKMAN_CLKSLOW]
-	orr	r0, r1, #CLKSLOW_SLOW
+	ldr	r1, upll_config_data
+	str	r1, [r2, #CLKMAN_UPLLCON]
+
+	ldr	r1, clkdivn_config_data
+	str	r1, [r2, #CLKMAN_CLKDIVN]
+
+	ldr	r1, camdivn_config_data
+	str	r1, [r2, #CLKMAN_CAMDIVN]
+
+	mov	r0, #0
 	str	r0, [r2, #CLKMAN_CLKSLOW]
 	nop
-	nop
 
-	ldmia	r4, {r0,r3}
-	str	r0, [r2, #CLKMAN_CLKDIVN]
-
-	str	r3, [r2, #CLKMAN_MPLLCON]
-	nop
-	nop
-
-	str	r1, [r2, #CLKMAN_CLKSLOW]
-#endif
+	ldr	r1, mpll_config_data
+	str	r1, [r2, #CLKMAN_MPLLCON]
 
 	/* Are we running on right place ? */
 	adr r0, _C_LABEL(gta02_start)
@@ -180,14 +192,28 @@ gta02_start_ram:
 Lstart:
 	.word	start
 
-	.macro clock_data  hdivn, pdivn, mdiv, pdiv, sdiv
-	.word	(\hdivn)<<1 | \pdivn
+	.macro	pllcon_data mdiv, pdiv, sdiv
 	.word	(\mdiv)<<PLLCON_MDIV_SHIFT | (\pdiv)<<PLLCON_PDIV_SHIFT | (\sdiv)<<PLLCON_SDIV_SHIFT
 	.endm
-#ifdef	SMDK2XX0_CLOCK_CONFIG
-clock_config_data:
-	clock_data SMDK2XX0_CLOCK_CONFIG
-#endif
+
+	.macro clkdivn_data divn_upll, hdivn, pdivn
+	.word (\divn_upll)<<CLKDIVN_DIVN_UPLL_SHIFT | \
+	      (\hdivn)<<CLKDIVN_HDIVN_SHIFT | \
+	      (\pdivn)<<CLKDIVN_PDIVN_SHIFT
+	.endm
+
+	.macro camdivn_data hclk4_half, hclk3_half
+	.word (\hclk4_half)<<CAMDIVN_HCLK4_HALF_SHIFT | (\hclk3_half)<<CAMDIVN_HCLK3_HALF_SHIFT
+	.endm
+
+upll_config_data:
+	pllcon_data GTA02_UPLLCON_CONFIG
+mpll_config_data:
+	pllcon_data GTA02_MPLLCON_CONFIG
+clkdivn_config_data:
+	clkdivn_data GTA02_CLKDIVN_CONFIG
+camdivn_config_data:
+	camdivn_data GTA02_CAMDIVN_CONFIG
 
 #define MMU_INIT(va,pa,n_sec,attr) \
 	.word	n_sec					    ; \

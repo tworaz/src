@@ -180,9 +180,11 @@
 #define	 CLKSLOW_SLOW	(1<<4)	/* 1: Enable SLOW mode */
 #define	 CLKSLOW_VAL_MASK  0x0f	/* divider value for slow clock */
 
-#define	CLKMAN_CLKDIVN	0x14	/* Software reset control */
-#define	 CLKDIVN_HDIVN	(1<<1)	/* hclk=fclk/2 */
-#define	 CLKDIVN_PDIVN	(1<<0)	/* pclk=hclk/2 */
+#define	CLKMAN_CLKDIVN		0x14	/* Software reset control */
+#define	 CLKDIVN_HDIVN_SHIFT	1
+#define	 CLKDIVN_HDIVN		(1<<CLKDIVN_HDIVN_SHIFT)	/* hclk=fclk/2 */
+#define	 CLKDIVN_PDIVN_SHIFT	0
+#define	 CLKDIVN_PDIVN		(1<<CLKDIVN_PDIVN_SHIFT)	/* pclk=hclk/2 */
 
 /* LCD controller */
 #define	LCDC_LCDCON1	0x00	/* control 1 */

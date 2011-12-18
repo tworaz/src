@@ -236,7 +236,7 @@ s3c24x0_clock_freq2(vaddr_t clkman_base, int *fclk, int *hclk, int *pclk)
 	f = (2* (mdiv + 8) * S3C2XX0_XTAL_CLK) / ((pdiv + 2) * (1 << sdiv));
 	h = f;
 
-	switch( (divn & CLKDIVN_HDIVN_MASK) >> CLKDIVN_HDIVN_SHIFT)
+	switch ((divn & CLKDIVN_HDIVN_MASK) >> CLKDIVN_HDIVN_SHIFT)
 	{
 		case 0:
 			/* 00b: HCLK = FCLK/1 */
@@ -248,7 +248,7 @@ s3c24x0_clock_freq2(vaddr_t clkman_base, int *fclk, int *hclk, int *pclk)
 		case 2:
 			/* 10b: HCLK = FCLK/4 when CAMDIVN[9] (HCLK4_HALF) = 0
 			 *      HCLK = FCLK/8 when CAMDIVN[9] (HCLK4_HALF) = 1 */
-			if( camdivn & CLKCAMDIVN_HCLK4_HALF )
+			if (camdivn & CAMDIVN_HCLK4_HALF)
 				h /= 8;
 			else
 				h /= 4;
@@ -256,7 +256,7 @@ s3c24x0_clock_freq2(vaddr_t clkman_base, int *fclk, int *hclk, int *pclk)
 		case 3:
 			/* 11b: HCLK = FCLK/3 when CAMDIVN[8] (HCLK3_HALF) = 0
 			 *      HCLK = FCLK/6 when CAMDIVN[8] (HCLK3_HALF) = 1 */
-			if( camdivn & CLKCAMDIVN_HCLK3_HALF )
+			if (camdivn & CAMDIVN_HCLK3_HALF)
 				h /= 6;
 			else
 				h /= 3;
