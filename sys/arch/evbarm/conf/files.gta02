@@ -50,3 +50,7 @@ file	arch/evbarm/gta02/pcf50633pwr.c		pcf50633pwr
 device	gta02bat: sysmon_envsys
 attach	gta02bat at pcf50633bus
 file	arch/evbarm/gta02/gta02bat.c		gta02bat
+
+# Platform attachement for PCF50633 PSM
+attach	pcf50633psm at pcf50633bus with gta02psm
+file	arch/evbarm/gta02/gta02psm.c		gta02psm
