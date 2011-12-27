@@ -180,3 +180,7 @@ file	dev/i2c/pcf50633bus.c		pcf50633bus
 device	pcf50633rtc
 attach	pcf50633rtc at pcf50633bus
 file	dev/i2c/pcf50633rtc.c		pcf50633rtc
+
+# NXP/Phihlips PCF50633 Power Supply Module
+device	pcf50633psm: sysmon_envsys
+file	dev/i2c/pcf50633psm.c		pcf50633psm
