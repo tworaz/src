@@ -52,10 +52,7 @@
 #define	DPRINTF(s)	do { } while (/*CONSTCOND*/0)
 #endif /* PCF50633BUS_DEBUG */
 
-/*
- * Useful macros for converting interrupt register + bit
- * pair into interrupt number and the other way around.
- */
+/* Converting interrupt register & bit to interrupt number. */
 #define REGBIT_TO_INTR(reg, bit) \
 	((8 * (reg)) + (bit))
 
@@ -263,7 +260,10 @@ pcf50633bus_intr_handler(uint8_t *intr, uint8_t *mask)
 					func = sc->sc_handler[intno].func;
 					level = sc->sc_handler[intno].level;
 
-					sysmon_task_queue_sched(level, func, farg);
+					if (sysmon_task_queue_sched(level, func, farg)) {
+						printf("Failed to schedule PCF50633"
+						       "interupt task!");
+					}
 				}
 			}
 		}
