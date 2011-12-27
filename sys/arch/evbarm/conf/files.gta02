@@ -5,7 +5,10 @@
 # CPU support and integrated peripherals
 include "arch/arm/s3c2xx0/files.s3c2410"
 
-defparam	opt_smdk2xx0.h SMDK2XX0_CLOCK_CONFIG
+defparam	opt_gta02.h GTA02_UPLLCON_CONFIG
+defparam	opt_gta02.h GTA02_MPLLCON_CONFIG
+defparam	opt_gta02.h GTA02_CLKDIVN_CONFIG
+defparam	opt_gta02.h GTA02_CAMDIVN_CONFIG
 
 file	arch/evbarm/gta02/gta02_machdep.c
 

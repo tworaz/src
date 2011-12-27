@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  */
 
-#include "opt_smdk2xx0.h"		/* SMDK2XX0_CLOCK_CONFIG */
+#include "opt_gta02.h"
 
 #include <machine/asm.h>
 #include <arm/armreg.h>
