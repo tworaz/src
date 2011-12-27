@@ -136,7 +136,7 @@ options 	SYSVSHM		# System V-like memory sharing
 #options 	DDB			# in-kernel debugger
 #options 	DDB_HISTORY_SIZE=100	# Enable history editing in DDB
 #options 	DDB_KEYCODE=0x1d	# Enter ddb on ^]
-makeoptions	DEBUG="-g"		# compile full symbol table
+#makeoptions	DEBUG="-g"		# compile full symbol table
 #options 	SYMTAB_SPACE=480000	# size for embedded symbol table
 
 config		netbsd	root on ? type ?
@@ -145,10 +145,10 @@ config		netbsd	root on ? type ?
 mainbus0	at root
 
 # The boot CPU
-cpu0		at mainbus?
+cpu0		at mainbus0
 
 # Core logic on Samsung S3C2410
-ssio0		at mainbus?
+ssio0		at mainbus0
 ssextio0	at ssio0
 
 # Watchdog timer
@@ -165,8 +165,8 @@ sswdog0		at ssio0 addr 0x53000000
 options		CONSPEED=115200
 
 # Inter-Integrated Circuit controller
-ssiic*		at ssextio? addr 0x54000000 intr 27
-iic*		at ssiic?
+ssiic0		at ssextio0 addr 0x54000000 intr 27
+iic0		at ssiic0
 #options 	S3C24X0_IIC_CLK=100000		# IIC clock frequency in HZ
 #options	S3C24X0_IIC_DEBUG
 
@@ -183,10 +183,11 @@ gta02leds0	at ssio0
 gta02bt0	at ssio0
 
 # NXP/Philips PCF50633
-pcf50633bus0	at iic? addr 0x73	# Device Bus
+pcf50633bus0	at iic0 addr 0x73	# Device Bus
 pcf50633rtc0	at pcf50633bus0		# Real Time Clock
+pcf50633psm0	at pcf50633bus0		# Power Supply Module
 pcf50633pwr0	at pcf50633bus0		# Power button handler
-gta02bat0	at pcf50633bus0		# OpenMoko battery
+#gta02bat0	at pcf50633bus0		# OpenMoko battery
 #options	PCF50633BUS_DEBUG
 
 # Touch screen controller
@@ -195,7 +196,7 @@ wsmouse*        at ssts0 mux 0
 #options        SSTS_DEBUG
 
 # SMedia GLAMO
-glamofb*	at ssio?	# Framebuffer console
+glamofb0	at ssio0	# Framebuffer console
 
 # wsdisplay configuration
 wsdisplay*	at wsemuldisplaydev? console 1
@@ -212,8 +213,8 @@ options		WS_KERNEL_BG=WSCOL_BLACK
 options		FONT_QVSS8x15
 
 # SPI port
-ssspi0		at ssio? index 0
-ssspi1		at ssio? index 1
+ssspi0		at ssio0 index 0
+ssspi1		at ssio0 index 1
 
 # MIDI support
 #midi*	at midibus?
@@ -230,7 +231,7 @@ usb*	at ohci?
 
 # USB Hubs
 uhub*	at usb?
-#uhub*	at uhub? port ?
+uhub*	at uhub? port ?
 
 # USB HID device
 uhidev*	at uhub? port ? configuration ? interface ?
@@ -247,7 +248,7 @@ wskbd*	at ukbd? console ? mux 1
 #ucycom*	at uhidev? reportid ?
 
 # USB Generic HID devices
-#uhid*	at uhidev? reportid ?
+uhid*	at uhidev? reportid ?
 
 # USB Printer
 #ulpt*	at uhub? port ? configuration ? interface ?
@@ -260,7 +261,7 @@ wskbd*	at ukbd? console ? mux 1
 #uhso*	at uhub? port ? configuration ?
 
 # USB Mass Storage
-#umass*	at uhub? port ? configuration ? interface ?
+umass*	at uhub? port ? configuration ? interface ?
 #wd* at umass?
 
 # USB audio
