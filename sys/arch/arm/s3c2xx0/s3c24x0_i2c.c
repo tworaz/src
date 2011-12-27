@@ -486,6 +486,7 @@ finish:
 	mutex_spin_exit(&sc->sc_irq_lock);
 
 	bus_space_write_4(sc->sc_iot, sc->sc_ioh, IIC_IICSTAT, 0);
+	s3c24x0_i2c_irq_disable(sc);
 	s3c24x0_i2c_pending_clear(sc);
 
 	return rv;
@@ -526,17 +527,17 @@ retry:
 			DPRINT_REGS(sc);
 			goto retry;
 		}
+
+		s3c24x0_i2c_intr(sc);
+
 		if (sc->sc_err == S3CIIC_ERR_ACK) {
 			DPRINTF(("\n"));
-			s3c24x0_i2c_stop(sc);
 			goto retry_wait;
 		} else if (sc->sc_err == S3CIIC_ERR_ARB) {
 			DPRINTF(("\n"));
 			DPRINT_REGS(sc);
 			goto retry;
 		}
-
-		s3c24x0_i2c_intr(sc);
 	}
 	DPRINTF(("\n"));
 
